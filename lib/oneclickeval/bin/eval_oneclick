@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+A ".iunits" file is of the following format:
+% cat 1C2-J.iunits
+1C2-J-0001 I001 3 10
+1C2-J-0001 I002 1 5 I001
+1C2-J-0001 I003 3 5 I002
+1C2-J-0002 I001 2 2
+1C2-J-0002 I002 6 5
+1C2-J-0002 I003 2 3 I001,I002
+
+where
+Field 1: question ID;
+Field 2: iUnit ID;
+Field 3: iUnit weight (i.e. importance);
+Field 4: vital string length. A vital string is a short text string
+         that is probably necessary to be included in the 1CLICK system output
+	     in order to cover the meaning of the iUnit in the system output;
+Field 5: entailed iUnit ID(s). iUnit x is entailed by iUnit y if y includes x.
+         For example, an iUnit 'got PhD in 2010' entails another 'got PhD'.
+         Please list iUnit IDs that are entailed by the iUnit 
+         separating them with ','.
+
+
+A batch match file looks like this:
+% cat 1CLICKRUN-D-1
+1C2-J-0001 syslen= 500
+1C2-J-0001 I001 100
+1C2-J-0001 I002 50
+1C2-J-0002 syslen= 10
+1C2-J-0002 I002 400
+
+where (except for the 1st line that shows the
+actual size of the X-string)
+Field 1: question ID;
+Field 2: iUnit ID of the iUnit identified by the assessor in the output;
+Field 3: iUnit offset (position) as identified by the assessor.
+"""
+
+from oneclickeval import OneClickMeasure
+from oneclickeval import IUnit, IUnitMatch, IUnitSet, XString
+
+if __name__ == '__main__':
+    import optparse
+    parser = optparse.OptionParser()
+    parser.add_option("--iunit", dest="iunit_filename", help="iUnit filename")
+    parser.add_option("--mat", dest="match_filename", help="Match filename")
+    parser.add_option("--maxlen", dest="maxlen", type="int", help="maximum length of X-string")
+    parser.add_option("-l", dest="l", type="int", help="parameter of S-measure")
+    parser.add_option("--beta", dest="beta", type="int", 
+                      help="parameter of S#-measure", default=10)
+    (opts, args) = parser.parse_args()
+    if not all([opts.iunit_filename, opts.maxlen, opts.l]):
+      print "--iunit %s --mat %s --maxlen %s -l %s" % (opts.iunit_filename, 
+        opts.match_filename, opts.maxlen, opts.l)
+      parser.error('need parameters --iunit --mat --maxlen -l')
+
+    all_iunits = IUnitSet.read(opts.iunit_filename)
+    xstring = XString.read(opts.match_filename)
+
+    for qid in all_iunits.qids():
+      iunits = all_iunits.get(qid)
+      pmo = all_iunits.pseudo_minimal_output(qid, opts.l, opts.maxlen)
+      matches = xstring.get(qid)
+
+      num_iunits = len(iunits)
+      num_matches = len(matches)
+      syslen = xstring.len(qid)
+      recall = OneClickMeasure.recall(iunits, matches)
+      wrecall = OneClickMeasure.wrecall(iunits, matches)
+      smeasure = OneClickMeasure.smeasure(iunits, pmo, matches, opts.l)
+      sflat = OneClickMeasure.sflat(iunits, pmo, matches, opts.l)
+      tmeasure = OneClickMeasure.tmeasure(iunits, matches, syslen)
+      tflat = OneClickMeasure.tflat(iunits, matches, syslen)
+      ssharp = OneClickMeasure.ssharp(iunits, pmo, matches, opts.l, syslen, opts.beta)
+      
+      print "%s\tiUnits\t%s" % (qid, num_iunits)
+      print "%s\tMatches\t%s" % (qid, num_matches)
+      print "%s\tSyslen\t%s" % (qid, syslen)
+      print "%s\tRecall\t%s" % (qid, recall)
+      print "%s\tWRecall\t%s" % (qid, wrecall)
+      print "%s\tS\t%s" % (qid, smeasure)
+      print "%s\tSFlat\t%s" % (qid, sflat)
+      print "%s\tT\t%s" % (qid, tmeasure)
+      print "%s\tTFlat\t%s" % (qid, tflat)
+      print "%s\tSSharp\t%s" % (qid, ssharp)
+
