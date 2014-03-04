@@ -1,14 +1,16 @@
 OneClickEval
 ============
 
-Options:
-  -h, --help            show this help message and exit
-  --iunit=IUNIT_FILENAME
-                        iUnit filename
-  --mat=MATCH_FILENAME  Match filename
-  --maxlen=MAXLEN       maximum length of X-string
-  -l L                  parameter of S-measure
-  --beta=BETA           parameter of S#-measure
+Usage
+------------
+
+  Options:
+  -h, --help            	show this help message and exit
+  --iunit=IUNIT_FILENAME	iUnit filename
+  --mat=MATCH_FILENAME  	Match filename
+  --maxlen=MAXLEN       	maximum length of X-string
+  -l L                  	parameter of S-measure
+  --beta=BETA           	parameter of S#-measure
 
 
 Evaluation tool for 1CLICK task
