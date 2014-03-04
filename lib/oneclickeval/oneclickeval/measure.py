@@ -1,4 +1,4 @@
-from oneclick.units import IUnit, IUnitMatch, IUnitSet, XString
+from oneclickeval.units import IUnit, IUnitMatch, IUnitSet, XString
 import unittest
 
 class OneClickMeasure:
