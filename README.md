@@ -3,6 +3,12 @@ OneClickEval
 
 OneClickEval is an evaluation tool for 1CLICK-2@NTCIR-10.
 
+Install
+------------
+```
+pip install git+https://github.com/cyby/oneclickeval
+```
+
 Usage
 ------------
 ```
