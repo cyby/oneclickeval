@@ -6,18 +6,15 @@ from oneclickeval import IUnit, IUnitMatch, IUnitSet, XString
 
 if __name__ == '__main__':
     import optparse
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="usage: %prog [options]")
     parser.add_option("--iunit", dest="iunit_filename", help="iUnit filename")
     parser.add_option("--mat", dest="match_filename", help="Match filename")
-    parser.add_option("--maxlen", dest="maxlen", type="int", help="maximum length of X-string")
-    parser.add_option("-l", dest="l", type="int", help="parameter of S-measure")
-    parser.add_option("--beta", dest="beta", type="int", 
-                      help="parameter of S#-measure", default=10)
+    parser.add_option("--maxlen", dest="maxlen", type="int", help="maximum length of X-strings")
+    parser.add_option("--l", dest="l", type="int", help="parameter of S-measure")
+    parser.add_option("--beta", dest="beta", type="int", help="parameter of S#-measure")
     (opts, args) = parser.parse_args()
     if not all([opts.iunit_filename, opts.maxlen, opts.l]):
-      print "--iunit %s --mat %s --maxlen %s -l %s" % (opts.iunit_filename, 
-        opts.match_filename, opts.maxlen, opts.l)
-      parser.error('need parameters --iunit --mat --maxlen -l')
+      parser.error('need parameters --iunit --mat --maxlen --l --beta')
 
     all_iunits = IUnitSet.read(opts.iunit_filename)
     xstring = XString.read(opts.match_filename)
