@@ -6,6 +6,7 @@ OneClickEval is an evaluation tool for 1CLICK-2@NTCIR-10.
 Usage
 ------------
 ```
+Usage: eval_oneclick [options]
 
 Options:
   -h, --help            	show this help message and exit
@@ -15,6 +16,12 @@ Options:
   --l=L						parameter of S-measure
   --beta=BETA           	parameter of S#-measure
 ```
+
+e.g.
+```
+eval_oneclick --iunit=1C2-J.iunits.tsv --mat=KUIDL-J-D-MAND-1.tsv --maxlen=500 --l=1000 --beta=10
+```
+
 
 iUnits File
 ------------
